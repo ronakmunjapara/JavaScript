@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image to Text Converter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .upload-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .upload-button:hover {
+            background-color: #45a049;
+        }
+
+        #convertedText {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .convert-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .convert-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script src="https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js"></script>
+    <script>
+        function convertImageToText() {
+            var fileInput = document.getElementById("imageInput");
+            var file = fileInput.files[0];
+
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var img = new Image();
+                    img.onload = function() {
+                        Tesseract.recognize(img)
+                            .then(function(result) {
+                                document.getElementById("convertedText").value = result.text;
+                            })
+                            .catch(function(error) {
+                                console.error(error);
+                            });
+                    };
+                    img.src = e.target.result;
+                    img.id = "imagePreview";
+                    document.getElementById("imageContainer").innerHTML = "";
+                    document.getElementById("imageContainer").appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Image to Text Converter</h1>
+        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        <label for="imageInput" class="upload-button">Upload Image</label>
+        <div id="imageContainer"></div>
+        <textarea id="convertedText" placeholder="Converted Text" readonly></textarea>
+        <button class="convert-button" onclick="convertImageToText()">Convert Image to Text</button>
+    </div>
+</body>
+</html
